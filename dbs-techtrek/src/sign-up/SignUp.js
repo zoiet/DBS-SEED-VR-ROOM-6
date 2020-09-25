@@ -13,6 +13,10 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
+import ImageUploader from "react-images-upload";
+import Datetime from "react-datetime";
+import DateTimePicker from "react-datetime-picker";
+
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -24,6 +28,12 @@ function Copyright() {
       {'.'}
     </Typography>
   );
+}
+
+function onDrop(pictureFiles, pictureDataURLs) {
+  this.setState({
+    pictures: this.state.pictures.concat(pictureFiles)
+  });
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -48,7 +58,20 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignUp() {
   const classes = useStyles();
+  const regisTime = new Date();
+  const [value, onChange] = useState(new Date());
+  const [productType, setProductType] = useState("none");
+  const productTypeList = [
+    { value: "137", label: "Investor" },
+    { value: "070", label: "Insurance" },
+    { value: "291", label: "Loans" },
+    { value: "969", label: "Savings" },
+    { value: "555", label: "Credit Cards" }
+  ];
 
+  const handleProductType = (e) => {
+    setProductType(e.value);
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -113,11 +136,21 @@ export default function SignUp() {
                 variant="outlined"
                 required
                 fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
+                name="registrationTime"
+                label="Registration Time"
+                type="datetime-local"
+                id="registrationTime"
+                defaultValue={regisTime}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <DateTimePicker
+                variant="outlined"
+                required
+                fullWidth
+                onChange={onChange}
+                value={value}
               />
             </Grid>
 
@@ -128,6 +161,17 @@ export default function SignUp() {
                 onChange={this.onDrop}
                 imgExtension={[".jpg", ".gif", ".png", ".gif"]}
                 maxFileSize={2097152}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Select
+                placeholder="Select Product Type"
+                options={productTypeList}
+                onChange={handleProductType}
+                value={productTypeList.filter(function (productTypeList) {
+                  return productTypeList.value === productType;
+                })}
               />
             </Grid>
 
@@ -156,8 +200,8 @@ export default function SignUp() {
           </Grid>
         </form>
       </div>
-      <Box mt={5}>{/* <Copyright /> */}</Box>
+      <Box mt={5}>
+        <Copyright /></Box>
     </Container>
-  );
+  )
 }
-
