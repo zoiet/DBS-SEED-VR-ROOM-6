@@ -40,6 +40,9 @@ class LoginPage extends Component {
             </div>
         </nav>
         <form onSubmit={this.handleSubmit}>
+        <div className="form-group text-center">
+        <img src="https://seekvectorlogo.com/wp-content/uploads/2019/11/dbs-bank-vector-logo-small.png" alt="logo"></img>
+            </div>
           <div className="form-group text-center">
           <label>User Name: </label>
           <input type="text" data-test="username" value={this.state.username} onChange={this.handleUsernameChange} />
