@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -12,6 +12,9 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+
 
 function Copyright() {
   return (
@@ -46,9 +49,98 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
+
 export default function SignUp() {
   const classes = useStyles();
+  const [custInfo, setCustInfo] = useState({
+    customerName: null, 
+    customerAge: null,
+    serviceOfficerName: null,
+    NRIC: null,
+  });
+  
+  const [nameSnack, setNameSnack] = useState(false);
+  const [ageSnack, setAgeSnack] = useState(false);
+  const [NRICSnack, setNRICSnack] = useState(false);
 
+  const handleInputChange = event => {
+    
+    // console.log(custInfo);
+    // console.log(event.target);
+    // setCustInfo({
+    //   ...custInfo, 
+    //   [event.target.name] : event.target.value
+    // });
+    if (event.target.name == "customerName" || event.target.name == "serviceOfficerName"){
+      if (event.target.value.length > 64){
+        setNameSnack(true);
+        setCustInfo({
+          ...custInfo, 
+          [event.target.name] : event.target.value.substring(0,65)
+        });
+      } else {
+        setCustInfo({
+          ...custInfo, 
+          [event.target.name] : event.target.value
+        });
+      }
+    } else if (event.target.name == "customerAge"){
+      if ( isNaN(parseInt(event.target.value,10))){
+      
+      } else {
+        setCustInfo({
+          ...custInfo, 
+          [event.target.name] : event.target.value
+        });
+        if (parseInt(event.target.value,10)<18){
+            
+          setAgeSnack(true);
+          setCustInfo({
+            ...custInfo, 
+            [event.target.name] : null
+          });
+        } else {
+          setCustInfo({
+            ...custInfo, 
+            [event.target.name] : event.target.value
+          });
+        }
+        
+      }
+    } else{
+      
+      var numeric_count =0 ;
+      for (var i = 0; i < event.target.value.length; i++){
+        if (!isNaN(parseInt(event.target.value.substring(i, i+1)))){
+          numeric_count = numeric_count +1;
+        }
+      }
+      if (numeric_count != 7){
+        setNRICSnack(true)
+      } else {
+        setCustInfo({
+          ...custInfo, 
+          [event.target.name] : event.target.value.toUpperCase()
+        });
+      }
+    } 
+    // console.log(custInfo);
+  }
+ const handleSubmit =() => {
+  //  call validate API
+   console.log(custInfo)
+   if (custInfo.customerName == null || custInfo.customerAge == null || custInfo.serviceOfficerName == null || custInfo.NRIC == null){
+    //  alert form not complete
+   } else {
+    //  submit
+   }
+ }
+  
+  
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -61,65 +153,66 @@ export default function SignUp() {
         </Typography>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="fname"
-                name="firstName"
-                variant="outlined"
-                required
-                fullWidth
-                id="firstName"
-                label="First Name"
-                autoFocus
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="lname"
-              />
-            </Grid>
+
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
                 required
                 fullWidth
-                id="email"
-                label="Email Address"
-                name="email"
-                autoComplete="email"
+                id="customerName"
+                label="Customer Name"
+                name="customerName"
+                value = {custInfo.customerName}
+                onChange={handleInputChange}
               />
-            </Grid>
+              
+              </Grid>
             <Grid item xs={12}>
-              <TextField
+            <TextField
                 variant="outlined"
                 required
                 fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
+                id="customerAge"
+                label="Customer Age"
+                name="customerAge"
+                type="number"
+                value={custInfo.customerAge}
+                onChange={handleInputChange}
               />
             </Grid>
             <Grid item xs={12}>
-              <FormControlLabel
-                control={<Checkbox value="allowExtraEmails" color="primary" />}
-                label="I want to receive inspiration, marketing promotions and updates via email."
+            <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="serviceOfficerName"
+                label="Service Officer Name"
+                name="serviceOfficerName"
+                value={custInfo.serviceOfficerName}
+                onChange={handleInputChange}
               />
             </Grid>
-          </Grid>
+            <Grid item xs={12}>
+            <TextField
+                variant="outlined"
+                required
+                fullWidth
+                id="NRIC"
+                label="NRIC"
+                name="NRIC"
+                value={custInfo.NRIC}
+                onChange={handleInputChange}
+              />
+            </Grid>
+            
+            </Grid>
           <Button
-            type="submit"
+            // type="submit"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
+            onClick={handleSubmit}
           >
             Sign Up
           </Button>
@@ -129,6 +222,21 @@ export default function SignUp() {
                 Already have an account? Sign in
               </Link>
             </Grid>
+            <Snackbar open={nameSnack} autoHideDuration={2000} onClose={()=> {setNameSnack(false)}}>
+                <Alert onClose={()=> {setNameSnack(false)}} severity="error">
+                   Name should be less than 65 characters.
+                </Alert>
+              </Snackbar>
+              <Snackbar open={ageSnack} autoHideDuration={2000} onClose={()=> {setAgeSnack(false)}}>
+                <Alert onClose={()=> {setAgeSnack(false)}} severity="error">
+                   Customer should be above 18.
+                </Alert>
+              </Snackbar>
+              <Snackbar open={NRICSnack} autoHideDuration={2000} onClose={()=> {setNRICSnack(false)}}>
+                <Alert onClose={()=> {setNRICSnack(false)}} severity="error">
+                   Invalid NRIC.
+                </Alert>
+              </Snackbar>
           </Grid>
         </form>
       </div>
