@@ -1,6 +1,9 @@
 # DBS-SEED-VR-ROOM-6
 
-TechTrek Challenge VR Room 6
+TechTrek Challenge VR Room 6  
+
+Presentation Slides  
+https://docs.google.com/presentation/d/1pABUZe4-dFJjacVr-n0tOGtUs6qmyprLMLyZqyZXjBU/edit?usp=sharing  
 
 Login API credentials  
 username: caritativofiona  
