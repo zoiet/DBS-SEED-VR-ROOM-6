@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { check, validationResult } = require("express-validator");
+const checkNRIC = require("../utils/functions");
 
 const Form = require("../models/Form");
 
@@ -11,6 +12,14 @@ router.post(
 	"/",
 	[
 		check("customerName", "Invalid customer name")
+			.not()
+			.isEmpty()
+			.isLength({ max: 64 }),
+		check("customerAge", "Invalid customer age")
+			.not()
+			.isEmpty()
+			.isInt({ min: 18 }),
+		check("serviceOfficerName", "Invalid service officer name")
 			.not()
 			.isEmpty()
 			.isLength({ max: 64 }),
@@ -40,6 +49,10 @@ router.post(
 			productType,
 		} = req.body;
 
+		if (!checkNRIC(NRIC)) {
+			return res.status(400).json({ errors: "Invalid NRIC" });
+		}
+
 		const formFields = {
 			customerName,
 			customerAge,
@@ -56,25 +69,25 @@ router.post(
 			let form = await Form.findOne({ NRIC });
 
 			// TODO: Call validation API to validate fields before accessing mongo
-			const options = {
-				uri:
-					"http://techtrek2020.ap-southeast-1.elasticbeanstalk.com/validateForm",
-				body: JSON.stringify(formFields),
-				method: "POST",
-				headers: {
-					"user-agent": "node.js",
-					"Content-Type": "application/json",
-					Authorization: token,
-				},
-			};
+			// const options = {
+			// 	uri:
+			// 		"http://techtrek2020.ap-southeast-1.elasticbeanstalk.com/validateForm",
+			// 	body: JSON.stringify(formFields),
+			// 	method: "POST",
+			// 	headers: {
+			// 		"user-agent": "node.js",
+			// 		"Content-Type": "application/json",
+			// 		Authorization: token,
+			// 	},
+			// };
 
-			request(options, (error, response, body) => {
-				if (error) console.log(error);
+			// request(options, (error, response, body) => {
+			// 	if (error) console.log(error);
 
-				if (response.statusCode !== 200) {
-					return res.status(404).json({ msg: "Invalid form entry" });
-				}
-			});
+			// 	if (response.statusCode !== 200) {
+			// 		return res.status(404).json({ msg: "Invalid form entry" });
+			// 	}
+			// });
 
 			// Update
 			if (form) {
