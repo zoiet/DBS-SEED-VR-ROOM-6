@@ -1,0 +1,3 @@
+{
+	"mongoURI": "mongodb+srv://test-project-user:test-project-password@dbs-seed.huh3o.mongodb.net/<dbname>?retryWrites=true&w=majority"
+}
