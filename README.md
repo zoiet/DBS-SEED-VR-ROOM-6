@@ -2,6 +2,5 @@
 TechTrek Challenge VR Room 6
 
 
-Login credentials
-username: caritativofiona\n
-password: 922cb712bea79bc8
+Login API credentials
+username: caritativofiona | password: 922cb712bea79bc8
