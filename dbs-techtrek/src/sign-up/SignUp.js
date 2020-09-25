@@ -56,6 +56,7 @@ export default function SignUp() {
     branchCode: null,
   });
 
+  const langugage = useState(false);
   const [nameSnack, setNameSnack] = useState(false);
   const [ageSnack, setAgeSnack] = useState(false);
   const [NRICSnack, setNRICSnack] = useState(false);
@@ -279,14 +280,14 @@ export default function SignUp() {
             </Grid>
 
             <Grid item xs={12}>
-              <Select
+              <TextField
                 required
                 placeholder="Select Interface Languge"
-                options={productTypeList}
-                onChange={handleProductType}
-                value={productTypeList.filter(function (productTypeList) {
-                  return productTypeList.value === productType;
-                })}
+                variant="outlined"
+                fullWidth
+                id="langugage"
+                label="langugage"
+                name="langugage"
               />
             </Grid>
 
