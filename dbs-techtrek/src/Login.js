@@ -7,6 +7,7 @@ class LoginPage extends Component {
     this.state = {
       username: '',
       password: '',
+      errorMessage: '',
     };
 
     this.handlePasswordChange = this.handlePasswordChange.bind(this);
@@ -16,7 +17,7 @@ class LoginPage extends Component {
 
   handleSubmit(evt) {
     evt.preventDefault();
-    return this.setState({ error: '' });
+    return this.setState({ errorMessage: '' });
   }
 
   handleUsernameChange(evt) {
