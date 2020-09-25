@@ -21,27 +21,93 @@ router.post(
 			return res.status(400).json({ errors: errors.array() });
 		}
 
-		const { NRIC } = req.body;
-
-		try {
-			// Check if form exists
-			let form = await Form.findOne({ NRIC });
-
-			if (form) {
-				return res
-					.status(400)
-					.json({ errors: [{ msg: "Form with NRIC already exists" }] });
-			}
-
-			await form.save();
-		} catch (err) {
-			console.error(err.message);
-			res.status(500).send("Server Error");
+		// Get token
+		let token = req.header("Authorization");
+		if (!token || !token.includes("Bearer ")) {
+			return res
+				.status(401)
+				.json({ msg: "Invalid token, authorization denied" });
 		}
 
-		console.log(req.body);
-		res.send("Forms route");
+		const {
+			customerName,
+			customerAge,
+			serviceOfficerName,
+			NRIC,
+			registrationTime,
+			branchCode,
+			image,
+			productType,
+		} = req.body;
+
+		const formFields = {
+			customerName,
+			customerAge,
+			serviceOfficerName,
+			NRIC,
+			registrationTime,
+			branchCode,
+			image,
+			productType,
+		};
+
+		try {
+			// Since one form is link to only one NRIC, update form if exists, else create new form
+			let form = await Form.findOne({ NRIC });
+
+			// TODO: Call validation API to validate fields before accessing mongo
+			const options = {
+				uri:
+					"http://techtrek2020.ap-southeast-1.elasticbeanstalk.com/validateForm",
+				body: JSON.stringify(formFields),
+				method: "POST",
+				headers: {
+					"user-agent": "node.js",
+					"Content-Type": "application/json",
+					Authorization: token,
+				},
+			};
+
+			request(options, (error, response, body) => {
+				if (error) console.log(error);
+
+				if (response.statusCode !== 200) {
+					return res.status(404).json({ msg: "Invalid form entry" });
+				}
+			});
+
+			// Update
+			if (form) {
+				form = await Form.findOneAndUpdate(
+					{ NRIC },
+					{ $set: formFields },
+					{ new: true }
+				);
+				return res.json(form);
+			}
+
+			// Create
+			form = new Form(formFields);
+			await form.save();
+			return res.json(form);
+		} catch (err) {
+			console.error(err.message);
+			return res.status(500).send("Server Error");
+		}
 	}
 );
+
+// @route         GET /forms/:NRIC
+// @description   Get form details based on NRIC
+// @access        Public
+router.get("/:NRIC", async (req, res) => {
+	try {
+		const form = await Form.findOne({ NRIC: req.params.NRIC });
+		return res.json(form);
+	} catch (err) {
+		console.error(err.message);
+		return res.status(500).send("Server Error");
+	}
+});
 
 module.exports = router;
