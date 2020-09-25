@@ -14,6 +14,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { Route, Switch } from 'react-router-dom';
 import axios from 'axios';
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -39,6 +40,7 @@ export default function Login() {
   const classes = useStyles();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const history = useHistory();
 
     function handleSubmit(event) {
       event.preventDefault();
@@ -49,7 +51,7 @@ export default function Login() {
         axios.post('http://techtrek2020.ap-southeast-1.elasticbeanstalk.com/login', data).then(res => {
         console.log(res);
         if (res.status === 200) {
-          this.props.history.push("/");
+          history.push("/onboard");
           console.log('Successfully Login');
         }
       })
