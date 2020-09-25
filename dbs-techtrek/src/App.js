@@ -1,7 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import SignUp from './sign-up/SignUp'
+import Login from './Login';
 import {
   BrowserRouter as Router,
   Switch,
@@ -13,11 +13,11 @@ function App() {
   return (
     <Router>
       <Switch>
-                <Route path="/onboard">
-                  <SignUp />
+                <Route path="/login">
+                  <Login />
                 </Route>
                 <Route path="/">
-                  <SignUp/>
+                  <Login/>
                 </Route>
           </Switch>
     </Router>

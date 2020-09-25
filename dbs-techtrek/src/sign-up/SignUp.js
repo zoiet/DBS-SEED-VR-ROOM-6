@@ -16,6 +16,10 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 
 
+import ImageUploader from "react-images-upload";
+import Datetime from "react-datetime";
+import DateTimePicker from "react-datetime-picker";
+
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -27,6 +31,12 @@ function Copyright() {
       {'.'}
     </Typography>
   );
+}
+
+function onDrop(pictureFiles, pictureDataURLs) {
+  this.setState({
+    pictures: this.state.pictures.concat(pictureFiles)
+  });
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -56,6 +66,7 @@ function Alert(props) {
 
 export default function SignUp() {
   const classes = useStyles();
+  
   const [custInfo, setCustInfo] = useState({
     customerName: null, 
     customerAge: null,
@@ -66,6 +77,20 @@ export default function SignUp() {
   const [nameSnack, setNameSnack] = useState(false);
   const [ageSnack, setAgeSnack] = useState(false);
   const [NRICSnack, setNRICSnack] = useState(false);
+  const regisTime = new Date();
+  const [value, onChange] = useState(new Date());
+  const [productType, setProductType] = useState("none");
+  const productTypeList = [
+    { value: "137", label: "Investor" },
+    { value: "070", label: "Insurance" },
+    { value: "291", label: "Loans" },
+    { value: "969", label: "Savings" },
+    { value: "555", label: "Credit Cards" }
+  ];
+
+  const handleProductType = (e) => {
+    setProductType(e.value);
+  };
 
   const handleInputChange = event => {
     
@@ -204,7 +229,56 @@ export default function SignUp() {
                 onChange={handleInputChange}
               />
             </Grid>
-            
+
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="registrationTime"
+                label="Registration Time"
+                type="datetime-local"
+                id="registrationTime"
+                defaultValue={regisTime}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <DateTimePicker
+                variant="outlined"
+                required
+                fullWidth
+                onChange={onChange}
+                value={value}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <ImageUploader
+                withIcon={true}
+                buttonText="Choose images"
+                onChange={this.onDrop}
+                imgExtension={[".jpg", ".gif", ".png", ".gif"]}
+                maxFileSize={2097152}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <Select
+                placeholder="Select Product Type"
+                options={productTypeList}
+                onChange={handleProductType}
+                value={productTypeList.filter(function (productTypeList) {
+                  return productTypeList.value === productType;
+                })}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <FormControlLabel
+                control={<Checkbox value="allowExtraEmails" color="primary" />}
+                label="I want to receive inspiration, marketing promotions and updates via email."
+              />
             </Grid>
           <Button
             // type="submit"
@@ -241,8 +315,7 @@ export default function SignUp() {
         </form>
       </div>
       <Box mt={5}>
-        <Copyright />
-      </Box>
+        <Copyright /></Box>
     </Container>
-  );
+  )
 }

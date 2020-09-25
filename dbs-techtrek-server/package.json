@@ -1,0 +1,23 @@
+{
+	"name": "dbs-techtrek-team-6",
+	"version": "1.0.0",
+	"description": "dbs tech trek team 6 project",
+	"main": "server.js",
+	"scripts": {
+		"start": "node server",
+		"server": "nodemon server"
+	},
+	"author": "team 6",
+	"license": "ISC",
+	"dependencies": {
+		"config": "^3.3.2",
+		"express": "^4.17.1",
+		"express-validator": "^6.6.1",
+		"mongoose": "^5.10.7",
+		"request": "^2.88.2"
+	},
+	"devDependencies": {
+		"concurrently": "^5.3.0",
+		"nodemon": "^2.0.4"
+	}
+}
